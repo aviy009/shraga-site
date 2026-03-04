@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shraga — AI Insurance Automation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: #06040f;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* ─── AMBIENT BACKGROUND ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -30vh; right: -20vw;
+      width: 70vw; height: 70vw;
+      background: radial-gradient(circle, rgba(109,40,217,0.22) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -30vh; left: -20vw;
+      width: 60vw; height: 60vw;
+      background: radial-gradient(circle, rgba(29,78,216,0.18) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 56px;
+      background: rgba(6,4,15,0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .logo { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+    .logo-text {
+      font-size: 21px; font-weight: 800;
+      background: linear-gradient(120deg, #ddd6fe, #93c5fd);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .nav-badge {
+      font-size: 11px; letter-spacing: 1.8px; text-transform: uppercase;
+      color: rgba(255,255,255,0.28); font-weight: 500;
+    }
+    .nav-btn {
+      font-family: 'Heebo', sans-serif; font-size: 14px; font-weight: 700;
+      padding: 9px 22px; border-radius: 10px; border: none; cursor: pointer;
+      background: linear-gradient(135deg, #7c3aed, #1d4ed8);
+      color: #fff; text-decoration: none;
+      transition: opacity .18s, transform .18s;
+    }
+    .nav-btn:hover { opacity: .85; transform: translateY(-1px); }
+    .lang-switch {
+      font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.55);
+      text-decoration: none; padding: 7px 14px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: background .18s, color .18s;
+    }
+    .lang-switch:hover { background: rgba(255,255,255,0.07); color: white; }
+
+    /* ─── SECTIONS ─── */
+    section { position: relative; z-index: 1; }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 130px 24px 72px;
+      gap: 28px;
+    }
+
+    .chip {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 6px 16px; border-radius: 999px;
+      background: rgba(124,58,237,0.14);
+      border: 1px solid rgba(124,58,237,0.32);
+      font-size: 12.5px; color: #c4b5fd; font-weight: 500; letter-spacing: .2px;
+    }
+    .chip-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #8b5cf6;
+      animation: blink 2s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    .hero-title {
+      font-size: clamp(38px, 6.5vw, 72px);
+      font-weight: 900; line-height: 1.08; letter-spacing: -2px;
+      max-width: 860px;
+    }
+    .hero-title em {
+      font-style: normal;
+      background: linear-gradient(100deg, #a78bfa 10%, #38bdf8 55%, #34d399 90%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .hero-desc {
+      font-size: clamp(16px, 1.8vw, 19px);
+      color: rgba(255,255,255,0.52);
+      max-width: 560px; line-height: 1.8;
+    }
+
+    .hero-market {
+      display: inline-flex; align-items: center; gap: 14px;
+      padding: 13px 22px; border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .hero-market-heb {
+      font-size: 17px; font-weight: 700; direction: rtl;
+      background: linear-gradient(120deg, #ddd6fe, #93c5fd);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-market-div { width: 1px; height: 26px; background: rgba(255,255,255,0.1); }
+    .hero-market-en { font-size: 14px; color: rgba(255,255,255,0.5); }
+
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .btn-cta {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 14px 28px; border-radius: 13px;
+      font-family: 'Heebo', sans-serif; font-size: 15px; font-weight: 700;
+      background: linear-gradient(135deg, #7c3aed, #1d4ed8);
+      color: #fff; text-decoration: none; border: none; cursor: pointer;
+      box-shadow: 0 6px 28px rgba(109,40,217,0.38);
+      transition: opacity .18s, transform .18s;
+    }
+    .btn-cta:hover { opacity: .9; transform: translateY(-2px); }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 14px 28px; border-radius: 13px;
+      font-family: 'Heebo', sans-serif; font-size: 15px; font-weight: 600;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.78); text-decoration: none;
+      transition: background .18s, transform .18s;
+    }
+    .btn-outline:hover { background: rgba(255,255,255,0.09); transform: translateY(-2px); }
+
+    /* ─── TECH BAR ─── */
+    .techbar {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: center;
+      flex-wrap: wrap; gap: 10px;
+      padding: 22px 48px;
+      background: rgba(255,255,255,0.025);
+      border-top: 1px solid rgba(255,255,255,0.055);
+      border-bottom: 1px solid rgba(255,255,255,0.055);
+    }
+    .tb-label {
+      font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+      color: rgba(255,255,255,0.22); margin-right: 6px;
+    }
+    .tb-pill {
+      font-size: 12.5px; font-weight: 500;
+      padding: 5px 13px; border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.55);
+    }
+    .tb-pill.gcp { background: rgba(66,133,244,0.1); border-color: rgba(66,133,244,0.22); color: #93c5fd; }
+    .tb-pill.ai  { background: rgba(139,92,246,0.1); border-color: rgba(139,92,246,0.22); color: #c4b5fd; }
+
+    /* ─── LAYOUT WRAPPER ─── */
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 48px; }
+
+    /* ─── DIVIDER ─── */
+    .divider { max-width: 1080px; margin: 0 auto; padding: 0 48px; }
+    .divider hr { border: none; border-top: 1px solid rgba(255,255,255,0.055); }
+
+    /* ─── PROBLEM / SOLUTION ─── */
+    .ps-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 56px; padding: 96px 0;
+    }
+    .ps-col-label {
+      font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
+      color: rgba(255,255,255,0.22); margin-bottom: 18px;
+    }
+    .ps-col h2 {
+      font-size: clamp(22px, 2.8vw, 30px); font-weight: 800;
+      line-height: 1.3; letter-spacing: -.4px; margin-bottom: 18px;
+    }
+    .ps-col p { font-size: 15px; color: rgba(255,255,255,0.5); line-height: 1.82; margin-bottom: 14px; }
+    .ps-list { list-style: none; display: flex; flex-direction: column; gap: 13px; }
+    .ps-list li { display: flex; align-items: flex-start; gap: 11px; font-size: 14.5px; color: rgba(255,255,255,0.58); line-height: 1.55; }
+    .ps-icon { flex-shrink: 0; width: 20px; height: 20px; border-radius: 6px; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+    .ps-icon.x { background: rgba(239,68,68,0.14); }
+    .ps-icon.ok { background: rgba(52,211,153,0.14); }
+
+    /* ─── SECTION HEADER ─── */
+    .sec-head { text-align: center; margin-bottom: 52px; }
+    .sec-head h2 { font-size: clamp(24px, 3.2vw, 36px); font-weight: 800; letter-spacing: -.5px; margin-bottom: 12px; }
+    .sec-head p { font-size: 16px; color: rgba(255,255,255,0.48); max-width: 500px; margin: 0 auto; line-height: 1.72; }
+
+    /* ─── FEATURE CARDS ─── */
+    .feat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; padding-bottom: 96px; }
+    .feat-card {
+      padding: 30px 26px; border-radius: 18px;
+      background: rgba(255,255,255,0.028);
+      border: 1px solid rgba(255,255,255,0.065);
+      transition: border-color .2s, background .2s;
+    }
+    .feat-card:hover { border-color: rgba(124,58,237,0.35); background: rgba(124,58,237,0.06); }
+    .feat-ico {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 18px;
+    }
+    .ico-v { background: rgba(124,58,237,0.16); }
+    .ico-b { background: rgba(29,78,216,0.16); }
+    .ico-t { background: rgba(20,184,166,0.16); }
+    .feat-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 9px; }
+    .feat-card p { font-size: 13.5px; color: rgba(255,255,255,0.5); line-height: 1.78; }
+    .feat-quote {
+      margin-top: 14px; padding: 10px 12px 10px 10px;
+      background: rgba(255,255,255,0.038); border-radius: 9px;
+      font-size: 12.5px; font-style: italic;
+      color: rgba(255,255,255,0.38); direction: rtl; text-align: right;
+      border-right: 3px solid rgba(124,58,237,0.45);
+    }
+
+    /* ─── TECH DEEP ─── */
+    .tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding-bottom: 96px; }
+    .tech-card {
+      padding: 30px; border-radius: 18px;
+      background: rgba(255,255,255,0.028);
+      border: 1px solid rgba(255,255,255,0.065);
+    }
+    .tech-card.span2 {
+      grid-column: span 2;
+      background: linear-gradient(145deg, rgba(124,58,237,0.1), rgba(29,78,216,0.08));
+      border-color: rgba(124,58,237,0.22);
+    }
+    .tech-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 9px; }
+    .tech-card p { font-size: 13.5px; color: rgba(255,255,255,0.5); line-height: 1.78; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+    .tag {
+      font-size: 11.5px; font-weight: 600; padding: 3px 11px; border-radius: 999px;
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.09);
+      color: rgba(255,255,255,0.55);
+    }
+    .tag.gcp { background: rgba(66,133,244,0.1); border-color: rgba(66,133,244,0.22); color: #93c5fd; }
+    .tag.ai  { background: rgba(139,92,246,0.1); border-color: rgba(139,92,246,0.22); color: #c4b5fd; }
+
+    /* ─── MARKET STATS ─── */
+    .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; padding-bottom: 96px; }
+    .stat-card {
+      padding: 30px 24px; border-radius: 18px; text-align: center;
+      background: linear-gradient(150deg, rgba(124,58,237,0.09), rgba(29,78,216,0.06));
+      border: 1px solid rgba(124,58,237,0.16);
+    }
+    .stat-num {
+      font-size: 44px; font-weight: 900; letter-spacing: -2px; line-height: 1;
+      background: linear-gradient(120deg, #a78bfa, #38bdf8);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 9px;
+    }
+    .stat-lbl { font-size: 13.5px; color: rgba(255,255,255,0.5); line-height: 1.55; }
+    .stat-heb { font-size: 11px; color: rgba(255,255,255,0.22); margin-top: 6px; direction: rtl; }
+
+    /* ─── BOTTOM CTA ─── */
+    .bottom-cta {
+      text-align: center; display: flex; flex-direction: column; align-items: center;
+      gap: 24px; padding: 72px 24px 110px; max-width: 660px; margin: 0 auto;
+    }
+    .bottom-cta h2 { font-size: clamp(24px, 3.8vw, 38px); font-weight: 900; letter-spacing: -.6px; line-height: 1.18; }
+    .bottom-cta p { font-size: 16px; color: rgba(255,255,255,0.5); line-height: 1.72; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 26px 56px;
+      border-top: 1px solid rgba(255,255,255,0.055);
+    }
+    .foot-logo { display: flex; align-items: center; gap: 9px; }
+    .foot-wordmark {
+      font-size: 15px; font-weight: 800;
+      background: linear-gradient(120deg, #ddd6fe, #93c5fd);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .foot-copy { font-size: 11.5px; color: rgba(255,255,255,0.18); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      nav { padding: 15px 18px; } .nav-badge { display: none; }
+      .wrap, .divider { padding: 0 18px; }
+      .ps-grid { grid-template-columns: 1fr; padding: 56px 0; gap: 36px; }
+      .feat-grid { grid-template-columns: 1fr; }
+      .tech-grid { grid-template-columns: 1fr; }
+      .tech-card.span2 { grid-column: span 1; }
+      .stats-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 10px; text-align: center; padding: 22px 18px; }
+      .techbar { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="logo">
+      <svg width="26" height="26" viewBox="0 0 80 80" fill="none">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#1d4ed8"/></linearGradient>
+          <linearGradient id="g2" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#38bdf8"/></linearGradient>
+        </defs>
+        <path d="M40 6L66 18L66 42Q66 62 40 74Q14 62 14 42L14 18Z" fill="url(#g1)" opacity="0.18"/>
+        <path d="M40 6L66 18L66 42Q66 62 40 74Q14 62 14 42L14 18Z" stroke="url(#g1)" stroke-width="2.5" fill="none"/>
+        <path d="M34 62C31 48 34 36 40 18" stroke="rgba(255,255,255,0.55)" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M40 18L40 4" stroke="url(#g2)" stroke-width="3" stroke-linecap="round"/>
+        <path d="M34 10L40 2L46 10" stroke="url(#g2)" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="logo-text">Shraga</span>
+    </a>
+    <span class="nav-badge">Israeli InsurTech &middot; Early Stage</span>
+    <a href="index-he.html" class="lang-switch">🇮🇱 עברית</a>
+      <a href="https://wa.me/972XXXXXXXXX" class="nav-btn" target="_blank">Get in Touch</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="chip"><div class="chip-dot"></div> AI-Native · Built on Google Cloud</div>
+
+    <h1 class="hero-title">
+      Stop managing insurance.<br/>
+      Let <em>AI handle it.</em>
+    </h1>
+
+    <p class="hero-desc">
+      Shraga is a domain-trained AI agent that automates the workflows consuming Israeli insurance agencies every day — renewals, follow-ups, campaigns — so agents can do what humans do best.
+    </p>
+
+    <div class="hero-market">
+      <span class="hero-market-heb">עוזר אישי לסוכני ביטוח</span>
+      <div class="hero-market-div"></div>
+      <span class="hero-market-en">Purpose-built for the Israeli insurance market</span>
+    </div>
+
+    <div class="hero-btns">
+      <a href="https://wa.me/972XXXXXXXXX?text=Hi%2C%20I%27d%20like%20to%20learn%20more%20about%20Shraga" class="btn-cta" target="_blank">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        Request a Demo
+      </a>
+      <a href="#tech" class="btn-outline">
+        See How It Works
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- TECH BAR -->
+  <div class="techbar">
+    <span class="tb-label">Stack</span>
+    <span class="tb-pill gcp">Google Cloud Run</span>
+    <span class="tb-pill gcp">Vertex AI</span>
+    <span class="tb-pill gcp">Cloud Storage</span>
+    <span class="tb-pill ai">LLM Orchestration</span>
+    <span class="tb-pill ai">Hebrew NLP</span>
+    <span class="tb-pill">FastAPI · Python</span>
+    <span class="tb-pill">Playwright Automation</span>
+    <span class="tb-pill">PostgreSQL</span>
+  </div>
+
+  <!-- PROBLEM / SOLUTION -->
+  <section>
+    <div class="wrap">
+      <div class="ps-grid">
+        <div class="ps-col">
+          <div class="ps-col-label">The Problem</div>
+          <h2>Israeli insurance agencies run on spreadsheets and phone calls</h2>
+          <p>The market is fragmented across dozens of disconnected insurer portals, each with its own login, its own format, its own quirks. No unified workflow. No automation. Just people.</p>
+          <ul class="ps-list">
+            <li>
+              <div class="ps-icon x"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+              Renewals tracked manually — clients lapse before anyone notices
+            </li>
+            <li>
+              <div class="ps-icon x"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+              No bandwidth for proactive outreach — agents are always reactive
+            </li>
+            <li>
+              <div class="ps-icon x"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+              The only way to grow is to hire more people — margins never improve
+            </li>
+          </ul>
+        </div>
+        <div class="ps-col">
+          <div class="ps-col-label">The Solution</div>
+          <h2>An AI agent that actually understands insurance — in Hebrew</h2>
+          <p>Shraga isn't a generic AI wrapper. It's trained on insurance domain knowledge, connected to the real systems agents use every day, and capable of completing tasks end-to-end without human intervention.</p>
+          <ul class="ps-list">
+            <li>
+              <div class="ps-icon ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              Monitors every policy and acts before renewals are missed
+            </li>
+            <li>
+              <div class="ps-icon ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              Runs marketing campaigns autonomously — right client, right time
+            </li>
+            <li>
+              <div class="ps-icon ok"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              One agent handles 3× more clients — no new hires needed
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><hr/></div>
+
+  <!-- FEATURES -->
+  <section>
+    <div class="wrap" style="padding-top:80px;">
+      <div class="sec-head">
+        <h2>What Shraga does, right now</h2>
+        <p>Two production-ready automation modules. More in development.</p>
+      </div>
+      <div class="feat-grid">
+        <div class="feat-card">
+          <div class="feat-ico ico-v">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          </div>
+          <h3>Policy Renewal Automation</h3>
+          <p>Shraga scans the full client portfolio, flags upcoming renewals, contacts clients at the right time, and navigates insurer portals to complete renewals — without any human in the loop.</p>
+          <div class="feat-quote">פוליסה #4821 של כרמלה לוי — מסתיימת בעוד 16 יום. שרגא כבר טיפל.</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-ico ico-b">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.92 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 5.99 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <h3>Autonomous Client Campaigns</h3>
+          <p>Shraga identifies cross-sell opportunities and seasonal windows in the client base, generates Hebrew-language outreach, and executes campaigns — turning passive data into active revenue.</p>
+          <div class="feat-quote">3 קמפיינים פעילים · 89 לקוחות · נשלח אוטומטית</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-ico ico-t">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <h3>Insurance Document Intelligence</h3>
+          <p>Incoming policies, claims, and correspondence are automatically read, classified, and linked to the right client — eliminating the manual filing that buries agency staff every morning.</p>
+          <div class="feat-quote">מסמך זוהה: פוליסת רכב · פרטים חולצו · מקושר ללקוח</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><hr/></div>
+
+  <!-- TECH -->
+  <section id="tech">
+    <div class="wrap" style="padding-top:80px;">
+      <div class="sec-head">
+        <h2>Cloud-native. AI-first. Built to scale.</h2>
+        <p>Every layer of Shraga is architected to run on Google Cloud — from the AI core to the automation workers.</p>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-card span2">
+          <h3>Multi-model AI Orchestration on Vertex AI</h3>
+          <p>Shraga routes tasks to specialized models depending on context — document parsing, Hebrew text generation, decision logic, and portal navigation each use the right model for the job. The orchestration layer runs on Cloud Run with per-request auto-scaling, enabling Shraga to handle agency-wide workloads without pre-provisioned infrastructure.</p>
+          <div class="tag-row">
+            <span class="tag ai">Vertex AI</span>
+            <span class="tag ai">Multi-LLM Routing</span>
+            <span class="tag ai">Hebrew NLP</span>
+            <span class="tag gcp">Cloud Run</span>
+            <span class="tag gcp">Auto-scaling</span>
+          </div>
+        </div>
+        <div class="tech-card">
+          <h3>Browser Automation Engine</h3>
+          <p>A Playwright-based worker fleet navigates Israeli insurer portals autonomously — logging in, extracting data, and submitting renewals across every major system without screen-scraping fragility.</p>
+          <div class="tag-row">
+            <span class="tag">Playwright</span>
+            <span class="tag gcp">Cloud Run Workers</span>
+            <span class="tag">Session Management</span>
+          </div>
+        </div>
+        <div class="tech-card">
+          <h3>Backend & Data Pipeline</h3>
+          <p>A FastAPI Python backend handles workflow orchestration, with PostgreSQL for structured policy data and Cloud Storage for documents — designed for real-time multi-agency operation.</p>
+          <div class="tag-row">
+            <span class="tag">FastAPI · Python</span>
+            <span class="tag">PostgreSQL</span>
+            <span class="tag gcp">Cloud Storage</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><hr/></div>
+
+  <!-- MARKET -->
+  <section>
+    <div class="wrap" style="padding-top:80px;">
+      <div class="sec-head">
+        <h2>A focused market with no real competition</h2>
+        <p>Israel's insurance sector is large, fragmented, and completely underserved by modern software.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-num">~3,000</div>
+          <div class="stat-lbl">Licensed insurance agencies in Israel</div>
+          <div class="stat-heb">סוכנויות ביטוח מורשות בישראל</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">₪70B+</div>
+          <div class="stat-lbl">Annual insurance premium volume</div>
+          <div class="stat-heb">פרמיות ביטוח שנתיות</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">Zero</div>
+          <div class="stat-lbl">AI-native automation platforms built for this market today</div>
+          <div class="stat-heb">מתחרים עם אוטומציה מבוססת AI</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTTOM CTA -->
+  <section>
+    <div class="bottom-cta">
+      <h2>We're building the operating system for the Israeli insurance agency</h2>
+      <p>Looking for early agency partners and cloud infrastructure support. If you believe AI should be doing this work, let's talk.</p>
+      <a href="https://wa.me/972XXXXXXXXX?text=Hi%2C%20I%27d%20like%20to%20learn%20more%20about%20Shraga" class="btn-cta" target="_blank">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        Get in Touch
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="foot-logo">
+      <svg width="20" height="20" viewBox="0 0 80 80" fill="none">
+        <path d="M40 6L66 18L66 42Q66 62 40 74Q14 62 14 42L14 18Z" fill="#7c3aed" opacity="0.18"/>
+        <path d="M40 6L66 18L66 42Q66 62 40 74Q14 62 14 42L14 18Z" stroke="#7c3aed" stroke-width="2.5" fill="none"/>
+        <path d="M40 18L40 4" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+        <path d="M34 10L40 2L46 10" stroke="#38bdf8" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="foot-wordmark">Shraga</span>
+    </div>
+    <span class="foot-copy">meetshraga.com &middot; &copy; 2026 &middot; Israeli InsurTech</span>
+  </footer>
+
+</body>
+</html>
